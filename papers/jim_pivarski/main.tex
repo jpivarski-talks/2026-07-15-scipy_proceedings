@@ -97,9 +97,9 @@ There is a midpoint between these extremes. The DFME method is a convolution of 
 \[
 K_{\mathrm{DFME}}(x,y)=
 \begin{cases}
-\phantom{-}\dfrac{1}{\pi w^2} & \textrm{if } x^2+y^2\le w^2 \\
+\dfrac{1}{\pi w^2} & \textrm{if } x^2+y^2\le w^2 \\
 -\dfrac{1}{\pi(R^2-w^2)} & \textrm{if } w^2<x^2+y^2\le R^2 \\
-\phantom{-}0 & \textrm{otherwise}
+0 & \textrm{otherwise}
 \end{cases}
 \]
 for $w$ = 1 pixel and $R$ = 50 pixels (25~meters), illustrated on the left of Figure~\ref{fig:kernels}. Convolving this kernel with the bare-earth elevation image effectively subtracts each pixel from the mean of all pixels in a circle of radius $R$ around it.
@@ -114,7 +114,7 @@ K_{\mathrm{trough}}(x,y;\theta, \sigma)=
 & \text{if } x^2+y^2\le R^2 \text{ and } |x\sin\theta+y\cos\theta|<w \\
 -1/(\pi R^2)
 & \text{if } x^2+y^2\le R^2 \text{ and } |x\sin\theta+y\cos\theta|\ge w \\
-\phantom{-}0
+0
 & \text{otherwise}
 \end{cases}
 \]
@@ -124,11 +124,11 @@ In practice, we noticed that convolutions with $K_{\mathrm{trough}}$ also highli
 \[
 K_{\mathrm{cliff}}(x,y;\theta, \sigma)=
 \begin{cases}
-\phantom{-}\dfrac{1}{\text{normalization}} \, {\exp\!\left(-\dfrac{x^2+y^2}{2\sigma^2}\right)}
+\dfrac{1}{\text{normalization}} \, {\exp\!\left(-\dfrac{x^2+y^2}{2\sigma^2}\right)}
 & \text{if } x^2+y^2\le R^2 \text{ and } x\sin\theta+y\cos\theta < 0 \\
 -\dfrac{1}{\text{normalization}} \, {\exp\!\left(-\dfrac{x^2+y^2}{2\sigma^2}\right)}
 & \text{if } x^2+y^2\le R^2 \text{ and } x\sin\theta+y\cos\theta \ge 0 \\
-\phantom{-\text{norma}} \, 0
+ \, 0
 & \text{otherwise,}
 \end{cases}
 \]
@@ -191,9 +191,9 @@ over all pixels $x$, $y$ and obtained the results shown in Table~\ref{tab:fit-re
 %% parameter & value & term & parameter & value & term \\
 %% \midrule
 $a_1$ & $-3.163932$ & $M_{15}$ & $a_5$ & $-0.270798$ & $(H_5 - L_5)$ \\
-$a_2$ & $-0.720934$ & $(L_{15} - M_{15})$ & $a_6$ & $\phantom{-}0.632681$ & $L_{15}(H_{15} - L_{15})$ \\
-$a_3$ & $\phantom{-}1.942169$ & $(H_{15} - L_{15})$ & $a_7$ & $-0.288150$ & $\left| F_{15} \right|$ (cliff veto) \\
-$a_4$ & $\phantom{-}0.195313$ & $(M_5 - M_{15})$ & $b$   & $-9.800052$ & (bias/intercept) \\
+$a_2$ & $-0.720934$ & $(L_{15} - M_{15})$ & $a_6$ & $0.632681$ & $L_{15}(H_{15} - L_{15})$ \\
+$a_3$ & $1.942169$ & $(H_{15} - L_{15})$ & $a_7$ & $-0.288150$ & $\left| F_{15} \right|$ (cliff veto) \\
+$a_4$ & $0.195313$ & $(M_5 - M_{15})$ & $b$   & $-9.800052$ & (bias/intercept) \\
 \bottomrule
 \end{tabular}
 
