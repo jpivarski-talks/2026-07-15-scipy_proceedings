@@ -230,6 +230,14 @@ In both cases, we developed the analysis using standard libraries, then replaced
 
 \section{Delivery as a Static Map Application}
 
+Although the data products described in Table~\ref{tab:data-products} are accessible to geospatial applications like ArcGIS and QGIS, most of the intended consumers are not geospatial experts, so we built a web-based map application. This application has a conventional interface: a large scrollable map with switches in a sidebar to toggle layers.
+
+Often, these map applications are built with a server to provide map tiles on demand. A custom server would require occasional maintenance, which scales poorly because the DSI develops applications for many projects, and servers must be maintained indefinitely. Maintenance could be offloaded to a service like MapTiler, but accumulating services with monthly fees is a different kind of maintenance scaling. The best option is to provide an application as a static website---files served by Cloudflare without any application logic outside of the user's web browser.
+
+The map and sidebar are all client-side HTML built with Svelte. The data products add up to 386~GB, which is far too much to load with the webpage; it will need to be dynamically loaded as tiles. A directory structure of XYZ tiles adds significant overhead and MBTiles require an active server to look up entries in an SQLite database. Instead, we used PMTiles~\citep{pmtiles}, a file format in which tiles are embedded at known seek positions within the file. A client-side library uses an index to find those seek positions, and then does a partial HTTP GET to access one tile at a time. All of the raster and vector data products are served as PMTiles.
+
+The map application also allows users to draw a straight or curved line on the map for a cross-section of the elevation along that line, as shown in Figure~\ref{fig:dashboard}. The elevation data used for this calculation is also provided as PMTiles. Each 32-bit floating point number is cast as the RGBA channels of a PNG raster in PMTiles and then decoded on the client.
+
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{img/dashboard.png}
@@ -237,18 +245,16 @@ In both cases, we developed the analysis using standard libraries, then replaced
 \caption{The web-based map application, showing 2021 aerial photography, gully paths (outlined light blue), erosion (purple) and deposition (orange) contours, and a user-drawn line (magenta) along which elevation in 2013, 2022, and their difference are displayed as plots on the right.\label{fig:dashboard}}
 \end{figure}
 
+\section{Conclusions}
 
+The GitHub repository for this project is
+\begin{center}
+{\small \url{https://github.com/dsi-clinic/oaec-found-gully}}
+\end{center}
+where you will find a link to the map application, documented links to data products that can be loaded in ArcGIS or QGIS, and all of the code that was used to bulid it.
 
-
-
-
-
-\vfill
-\pagebreak
-
-
-
+Our approach to gully modeling is intended as an example of how to substitute domain-specific knowledge for large training datasets, \textit{inspired by} more general models. Similarly, our approach to performance and algorithm enhancements, in which we started with standard library calls and replaced them with Numba-compiled functions as needed, was a very productive way to work.
 
 \section*{Acknowledgments}
 
-This work was shaped by conversations with Brock Dolman at OAEC and feedback from Adam Cummings, Matt O'Connor, and Jeremy Kobor. The project also benefited from the broader DSI 11th Hour and DSI Clinic contexts, in which environmental collaborations and cross-domain methodological reuse are both possible.
+We are grateful for Brock Dolman's very helpful guidance and useful feedback from Adam Cummings, Matt O'Connor, and Jeremy Kobor.
