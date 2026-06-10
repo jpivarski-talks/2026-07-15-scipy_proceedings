@@ -37,6 +37,8 @@ The SonomaVegMap project published bare-earth elevation maps for the entire coun
 
 Our geographic scope is the entirety of Sonoma County. The methods are not intrinsically limited to one county, but the available data products make the county a convenient boundary and it is already a significant expansion beyond the OAEC and its local collaborators. In addition, Sonoma County is somewhat unusual in having repeat coverage, which we can use to estimate landscape changes due to erosion.
 
+The main deliverable of this work is a web-based map in which all data layers can be overlaid for comparison. Some of those layers are directly copied from SonomaVegMap, such as ladder fuel proxies, or the Sonoma County GIS for parcel files for land ownership boundaries, with reformatting to provide them as map tiles. Other layers required significant derivation, such as the network of gullies that can be overlaid on other images. All of these data products are hosted on Cloudflare with documentation on our website, {\small \url{https://github.com/dsi-clinic/oaec-found-gully}}, to allow experts to dynamically load them in ArcGIS or QGIS. However, our web-based map is easier for non-experts and does not require extra software. Table~\ref{tab:data-products} summarizes all of the data products.
+
 \begin{table}
 \centering
 \small
@@ -58,8 +60,6 @@ Elevation 2013 \& 2022 & Reformatted from SVM 2013 \& 2022 & PMTile, GeoTIFF & 2
 
 \caption{Data products produced by this study, for viewing in the web-based map or directly in ArcGIS or QGIS. In the above, ``SVM'' refers to SonomaVegMap and ``Size'' includes only PMTiles.\label{tab:data-products}}
 \end{table}
-
-The main deliverable of this work is a web-based map in which all data layers can be overlaid for comparison. Some of those layers are directly copied from SonomaVegMap, such as ladder fuel proxies, or the Sonoma County GIS for parcel files for land ownership boundaries, with reformatting to provide them as map tiles. Other layers required significant derivation, such as the network of gullies that can be overlaid on other images. All of these data products are hosted on Cloudflare with documentation on our website, {\small \url{https://github.com/dsi-clinic/oaec-found-gully}}, to allow experts to dynamically load them in ArcGIS or QGIS. However, our web-based map is easier for non-experts and does not require extra software. Table~\ref{tab:data-products} summarizes all of the data products.
 
 \section{Gully Detection Model}
 
@@ -136,9 +136,7 @@ illustrated on the right of Figure~\ref{fig:kernels}. A model that gives positiv
 
 \begin{figure}
 \centering
-\includegraphics[width=0.32\textwidth]{img/kernel-dfme.png}
-\includegraphics[width=0.32\textwidth]{img/kernel-trough.png}
-\includegraphics[width=0.32\textwidth]{img/kernel-cliff-veto.png}
+\includegraphics[width=\textwidth]{img/kernels.png}
 
 \caption{Convolution kernels for pixelwise gully detection. Left: the DFME kernel ($K_{\mathrm{DFME}}$) is positive in one pixel in the center, negative in a large disk around it, and sums to zero. Middle: a trough-shaped kernel ($K_{\mathrm{trough}}$) replaces the single positive pixel with an angled line of a characteristic length $\sigma$, tapered as $\exp(-x^2/\sigma^2)$. Right: the cliff veto kernel ($K_{\mathrm{cliff}}$) is a positive (red) Gaussian on one side of an angled line and negative (blue) on the other.\label{fig:kernels}}
 \end{figure}
