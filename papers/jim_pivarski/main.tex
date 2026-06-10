@@ -111,7 +111,7 @@ K_{\mathrm{trough}}(x,y;\theta, \sigma)=
 -1/(\pi R^2)
 +\dfrac{\exp\!\left(-\dfrac{x^2+y^2}{2\sigma^2}\right)}
 {\text{normalization}}
-& \text{if } x^2+y^2\le R^2 \text{ and } |x\sin\theta+y\cos\theta|<w \\[3ex]
+& \text{if } x^2+y^2\le R^2 \text{ and } |x\sin\theta+y\cos\theta|<w \\
 -1/(\pi R^2)
 & \text{if } x^2+y^2\le R^2 \text{ and } |x\sin\theta+y\cos\theta|\ge w \\
 \phantom{-}0
@@ -125,7 +125,7 @@ In practice, we noticed that convolutions with $K_{\mathrm{trough}}$ also highli
 K_{\mathrm{cliff}}(x,y;\theta, \sigma)=
 \begin{cases}
 \phantom{-}\dfrac{1}{\text{normalization}} \, {\exp\!\left(-\dfrac{x^2+y^2}{2\sigma^2}\right)}
-& \text{if } x^2+y^2\le R^2 \text{ and } x\sin\theta+y\cos\theta < 0 \\[3ex]
+& \text{if } x^2+y^2\le R^2 \text{ and } x\sin\theta+y\cos\theta < 0 \\
 -\dfrac{1}{\text{normalization}} \, {\exp\!\left(-\dfrac{x^2+y^2}{2\sigma^2}\right)}
 & \text{if } x^2+y^2\le R^2 \text{ and } x\sin\theta+y\cos\theta \ge 0 \\
 \phantom{-\text{norma}} \, 0
