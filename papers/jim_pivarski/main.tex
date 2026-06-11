@@ -96,18 +96,18 @@ At the other extreme, we could use a Convolutional Neural Network (CNN) to ident
 There is a midpoint between these extremes. The DFME method is a convolution of the image with a kernel that is positive at a central point, negative in a large square or circle centered on that point, and sums to zero:
 \[
 K_{\mathrm{DFME}}(x,y)=
-\begin{cases}
+\left\{
 \dfrac{1}{\pi w^2} & \textrm{if } x^2+y^2\le w^2 \\
 -\dfrac{1}{\pi(R^2-w^2)} & \textrm{if } w^2<x^2+y^2\le R^2 \\
 0 & \textrm{otherwise}
-\end{cases}
+\right.
 \]
 for $w$ = 1 pixel and $R$ = 50 pixels (25~meters), illustrated on the left of Figure~\ref{fig:kernels}. Convolving this kernel with the bare-earth elevation image effectively subtracts each pixel from the mean of all pixels in a circle of radius $R$ around it.
 
 A convolutional layer in a CNN convolves the image with several kernels that are learned as part of the global optimization. The kernels represent relevant shapes at different size scales by pooling (resizing) the image in each layer. While that's necessary for recognizing complex images like the face of a cat with sufficient generality to be insensitive to camera angles and lighting, our task is much simpler: gullies are trough-shaped and the Earth is always viewed from directly above. Instead of convolving with $K_{\mathrm{DFME}}$, we can convolve with a trough-shaped kernel,
 \[
 K_{\mathrm{trough}}(x,y;\theta, \sigma)=
-\begin{cases}
+\left\{
 -1/(\pi R^2)
 +\dfrac{\exp\!\left(-\dfrac{x^2+y^2}{2\sigma^2}\right)}
 {\text{normalization}}
@@ -116,21 +116,21 @@ K_{\mathrm{trough}}(x,y;\theta, \sigma)=
 & \text{if } x^2+y^2\le R^2 \text{ and } |x\sin\theta+y\cos\theta|\ge w \\
 0
 & \text{otherwise}
-\end{cases}
+\right.
 \]
 where $K_{\mathrm{trough}}$ is parameterized by an angle $\theta$, illustrated in the middle of Figure~\ref{fig:kernels}. A convolution with this kernel highlights pixels that are lower than the surrounding region and also part of a linear path of low pixels, a path angled by $\theta$ and tapered like a Gaussian with characteristic length $\sigma$. Performing a weighted sum over such kernels at a variety of angles $\theta$ highlights pixels in troughs of any direction, and this process is equivalent to inference in one convolution layer of a CNN.
 
 In practice, we noticed that convolutions with $K_{\mathrm{trough}}$ also highlighted one-sided cliffs, usually artificial cliffs along roadsides, because the cliff matches one side of a trough and missing the other side only dampens the convolution by a factor of 2. As a veto, we added another kernel that only matches one-sided cliffs:
 \[
 K_{\mathrm{cliff}}(x,y;\theta, \sigma)=
-\begin{cases}
+\left\{
 \dfrac{1}{\text{normalization}} \, {\exp\!\left(-\dfrac{x^2+y^2}{2\sigma^2}\right)}
 & \text{if } x^2+y^2\le R^2 \text{ and } x\sin\theta+y\cos\theta < 0 \\
 -\dfrac{1}{\text{normalization}} \, {\exp\!\left(-\dfrac{x^2+y^2}{2\sigma^2}\right)}
 & \text{if } x^2+y^2\le R^2 \text{ and } x\sin\theta+y\cos\theta \ge 0 \\
  \, 0
 & \text{otherwise,}
-\end{cases}
+\right.
 \]
 illustrated on the right of Figure~\ref{fig:kernels}. A model that gives positive weight to convolutions with $K_{\mathrm{trough}}$ and negative weight to convolutions with $K_{\mathrm{cliff}}$ can distinguish between troughs and cliffs.
 
@@ -167,10 +167,11 @@ To exclude cliffs, we take the minimum of convolutions $C_{\textrm{cliff}}(x, y;
 \]
 Evaluating these at $\sigma$ = 5~meters and 15~meters,
 \[
-\begin{array}{l l l}
-H_5(x, y) = \textrm{high}(x, y; \textrm{5~meters}) & L_5(x, y) = \textrm{high}(x, y; \textrm{5~meters}) & M_5(x, y) = \textrm{mini}(x, y; \textrm{5~meters}) \\
-H_{15}(x, y) = \textrm{high}(x, y; \textrm{15~meters}) & L_{15}(x, y) = \textrm{high}(x, y; \textrm{15~meters}) & M_{15}(x, y) = \textrm{mini}(x, y; \textrm{15~meters}) \\
-& F_{15} = \textrm{cliff}(x, y; \textrm{15~meters}) & \\
+\begin{array}{l l}
+H_5(x, y) = \textrm{high}(x, y; \textrm{5~meters}) & H_{15}(x, y) = \textrm{high}(x, y; \textrm{15~meters}) \\
+L_5(x, y) = \textrm{high}(x, y; \textrm{5~meters}) & L_{15}(x, y) = \textrm{high}(x, y; \textrm{15~meters}) \\
+M_5(x, y) = \textrm{mini}(x, y; \textrm{5~meters}) & M_{15}(x, y) = \textrm{mini}(x, y; \textrm{15~meters}) \\
+& F_{15} = \textrm{cliff}(x, y; \textrm{15~meters}) \\
 \end{array}
 \]
 we performed a logistic regression with parameters $a_i$ and bias term $b$
@@ -190,10 +191,10 @@ over all pixels $x$, $y$ and obtained the results shown in Table~\ref{tab:fit-re
 \toprule
 %% parameter & value & term & parameter & value & term \\
 %% \midrule
-$a_1$ & $-3.163932$ & $M_{15}$ & $a_5$ & $-0.270798$ & $(H_5 - L_5)$ \\
-$a_2$ & $-0.720934$ & $(L_{15} - M_{15})$ & $a_6$ & $0.632681$ & $L_{15}(H_{15} - L_{15})$ \\
-$a_3$ & $1.942169$ & $(H_{15} - L_{15})$ & $a_7$ & $-0.288150$ & $\left| F_{15} \right|$ (cliff veto) \\
-$a_4$ & $0.195313$ & $(M_5 - M_{15})$ & $b$   & $-9.800052$ & (bias/intercept) \\
+$a_1$ & $\,-3.163932$ & $M_{15}$ & $a_5$ & $\,-0.270798$ & $(H_5 - L_5)$ \\
+$a_2$ & $\,-0.720934$ & $(L_{15} - M_{15})$ & $a_6$ & $\,0.632681$ & $L_{15}(H_{15} - L_{15})$ \\
+$a_3$ & $\,1.942169$ & $(H_{15} - L_{15})$ & $a_7$ & $\,-0.288150$ & $\left| F_{15} \right|$ (cliff veto) \\
+$a_4$ & $\,0.195313$ & $(M_5 - M_{15})$ & $b$   & $\,-9.800052$ & (bias/intercept) \\
 \bottomrule
 \end{tabular}
 
