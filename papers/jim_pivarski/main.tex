@@ -100,7 +100,7 @@ K_{\mathrm{DFME}}(x,y)=
 \dfrac{1}{\pi w^2} & \textrm{if } x^2+y^2\le w^2 \\
 -\dfrac{1}{\pi(R^2-w^2)} & \textrm{if } w^2<x^2+y^2\le R^2 \\
 0 & \textrm{otherwise}
-\end{array}\right.
+\end{array}\right\}
 \]
 for $w$ = 1 pixel and $R$ = 50 pixels (25~meters), illustrated on the left of Figure~\ref{fig:kernels}. Convolving this kernel with the bare-earth elevation image effectively subtracts each pixel from the mean of all pixels in a circle of radius $R$ around it.
 
@@ -116,7 +116,7 @@ K_{\mathrm{trough}}(x,y;\theta, \sigma)=
 & \text{if } x^2+y^2\le R^2 \text{ and } |x\sin\theta+y\cos\theta|\ge w \\
 0
 & \text{otherwise}
-\end{array}\right.
+\end{array}\right\}
 \]
 where $K_{\mathrm{trough}}$ is parameterized by an angle $\theta$, illustrated in the middle of Figure~\ref{fig:kernels}. A convolution with this kernel highlights pixels that are lower than the surrounding region and also part of a linear path of low pixels, a path angled by $\theta$ and tapered like a Gaussian with characteristic length $\sigma$. Performing a weighted sum over such kernels at a variety of angles $\theta$ highlights pixels in troughs of any direction, and this process is equivalent to inference in one convolution layer of a CNN.
 
@@ -130,7 +130,7 @@ K_{\mathrm{cliff}}(x,y;\theta, \sigma)=
 & \text{if } x^2+y^2\le R^2 \text{ and } x\sin\theta+y\cos\theta \ge 0 \\
  \, 0
 & \text{otherwise,}
-\end{array}\right.
+\end{array}\right\}
 \]
 illustrated on the right of Figure~\ref{fig:kernels}. A model that gives positive weight to convolutions with $K_{\mathrm{trough}}$ and negative weight to convolutions with $K_{\mathrm{cliff}}$ can distinguish between troughs and cliffs.
 
