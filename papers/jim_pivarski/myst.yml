@@ -12,6 +12,16 @@ project:
   authors:
     - name: Jim Pivarski
       email: jpivarski@uchicago.edu
+      orcid: 0000-0002-6649-343X
+      roles:
+        - Formal analysis
+        - Investigation
+        - Methodology
+        - Software
+        - Validation
+        - Visualization
+        - Writing – original draft
+        - Writing – review & editing
       affiliations:
         - id: uchicago_dsi
       corresponding: true
