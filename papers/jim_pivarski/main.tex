@@ -139,7 +139,7 @@ To be clear, we are replacing a learned-kernel CNN with feature engineering insp
 \end{figure}
 
 Due to this regularity, we can reduce the number of features and therefore the number of parameters in the model without losing model
-quality. The three most important features are the highest and lowest point of a sinusoidal fit of convolutions $C(x, y; \theta, \sigma)$ with kernel $K_{\mathrm{trough}}(x,y;\theta, \sigma)$ and the minimum value of those convolutions, which is useful because the minimum value is lower than the fitted sinusoidal curve in most of the real gullies that we observed. The amplitude of the sinusoidal fit can be expressed as the modulus of a complex sum. The phase of the sinusoidal fit could tell us the direction of the trough at a given point, but we don't need that for modeling.
+quality. The three most important features are the highest and lowest point of a sinusoidal fit of convolutions $C(x, y; \theta, \sigma)$ with kernel $K_{\mathrm{trough}}(x,y;\theta, \sigma)$ and the minimum value of those convolutions, which is useful because the minimum value is lower than the fitted sinusoidal curve in most of the real gullies that we observed. The amplitude of the sinusoidal fit can be computed directly as the modulus of a complex sum, a Riemann approximation of the integral to compute the first Fourier coefficient. The phase of the sinusoidal fit could tell us the direction of the trough at a given point, but we don't need that for modeling.
 \[
   \textrm{high}(x, y; \sigma) = \frac{1}{16}\sum_{n=0}^{15} C(x, y; {\frac{n}{16}\pi}, \sigma) + \frac{1}{8}\left| \sum_{n=0}^{15} C(x, y; {\frac{n}{16}\pi}, \sigma) e^{i n\pi/8} \right|
 \]
