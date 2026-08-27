@@ -31,15 +31,16 @@ The main deliverable of this work is a web-based map in which all data layers ca
 \toprule
 Layer & Derivation & Formats & Size \\
 \midrule
-Land ownership boundaries & Reformatted from Sonoma County GIS & PMTile & 27 MB \\
-Ladder fuel proxies & Reformatted from SVM 2022 & PMTile, GeoTIFF & 115 GB \\
-Greyscale hillshade & Reformatted from SVM 2022 & PMTile, GeoTIFF & 2.9 GB \\
-Color-enhanced hillshade & Derived from SVM 2022 data & PMTile, GeoTIFF & 149 GB \\
-Elevation contours & Derived from SVM 2022 data & PMTile, GeoJSON & 18 GB \\
-Elevation difference & Derived from SVM 2013 \& 2022 data & PMTile, GeoTIFF & 5.7 GB \\
-Elevation difference contours & Derived from SVM 2013 \& 2022 data & PMTile, GeoJSON & 12 GB \\
-Detected gully network & Derived from SVM 2022 data & PMTile, Parquet & 34 GB \\
-Elevation 2013 \& 2022 & Reformatted from SVM 2013 \& 2022 & PMTile, GeoTIFF & 22 GB \\
+Land ownership boundaries & Reformatted from Sonoma County GIS & PMTile & 27 MiB \\
+Ladder fuel proxies & Reformatted from SVM 2022 & PMTile, GeoTIFF & 115 MiB \\
+Greyscale hillshade & Reformatted from SVM 2022 & PMTile, GeoTIFF & 2.9 GiB \\
+Color-enhanced hillshade & Derived from SVM 2022 data & PMTile, GeoTIFF & 149 GiB \\
+Elevation contours & Derived from SVM 2022 data & PMTile, GeoJSON & 17.7 GiB \\
+Elevation difference & Derived from SVM 2013 \& 2022 data & PMTile, GeoTIFF & 5.7 GiB \\
+Elevation difference contours & Derived from SVM 2013 \& 2022 data & PMTile, GeoJSON & 11.8 GiB \\
+Gully probability & Derived from SVM 2022 data & PMTile & 843 MiB \\
+Detected gully network & Derived from SVM 2022 data & PMTile, Parquet & 34 MiB \\
+Elevation 2013 \& 2022 & Reformatted from SVM 2013 \& 2022 & PMTile, GeoTIFF & 22.1 GiB \\
 \bottomrule
 \end{tabular}
 
@@ -226,7 +227,7 @@ Although the data products described in Table~\ref{tab:data-products} are access
 
 Often, these map applications are built with a server to provide map tiles on demand. A custom server would require occasional maintenance, which scales poorly because the DSI develops applications for many projects, and servers must be maintained indefinitely. Maintenance could be offloaded to a service like MapTiler, but accumulating services with monthly fees is a different kind of maintenance scaling. The best option is to provide an application as a static website---files served by Cloudflare without any application logic outside of the user's web browser.
 
-The map and sidebar are all client-side HTML built with Svelte. The data products add up to 386~GB, which is far too much to load with the webpage; it will need to be dynamically loaded as tiles. A directory structure of XYZ tiles adds significant overhead and MBTiles require an active server to look up entries in an SQLite database. Instead, we used PMTiles~\citep{pmtiles}, a file format in which tiles are embedded at known seek positions within the file. A client-side library uses an index to find those seek positions, and then does a partial HTTP GET to access one tile at a time. All of the raster and vector data products are served as PMTiles.
+The map and sidebar are all client-side HTML built with Svelte. The data products add up to hundreds of GiB, which is far too much to load with the webpage; it will need to be dynamically loaded as tiles. A directory structure of XYZ tiles adds significant overhead and MBTiles require an active server to look up entries in an SQLite database. Instead, we used PMTiles~\citep{pmtiles}, a file format in which tiles are embedded at known seek positions within the file. A client-side library uses an index to find those seek positions, and then does a partial HTTP GET to access one tile at a time. All of the raster and vector data products are served as PMTiles.
 
 The map application also allows users to draw a straight or curved line on the map for a cross-section of the elevation along that line, as shown in Figure~\ref{fig:dashboard}. The elevation data used for this calculation is also provided as PMTiles. Each 32-bit floating point number is cast as the RGBA channels of a PNG raster in PMTiles and then decoded on the client.
 
