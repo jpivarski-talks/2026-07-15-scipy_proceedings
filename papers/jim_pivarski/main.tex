@@ -169,26 +169,33 @@ we performed a logistic regression with parameters $a_i$ and bias term $b$
 &+ a_5 (H_5 - L_5) + a_6 L_{15}(H_{15} - L_{15}) + a_7 \left| F_{15} \right| + b
 \end{aligned}
 \end{equation}
-over all pixels $x$, $y$ and obtained the results shown in Table~\ref{tab:fit-results}. The fitted model's predicted probabilities for pixels labeled as ``not in gully'' or ``in gully'' are shown for the 9~watersheds in Figure~\ref{fig:residuals}; note that these are in-sample residuals. The dominant term is $M_{15}$, the minimum convolution with $\sigma = 15$~meter troughs. Because $M_{15}$ values are negative in gullies with a negative coefficient, this term contributes positively to the probability that a pixel is in a gully. The rest of the terms are amplitudes, one interaction term, and the cliff veto. The cliff veto is fitted in absolute magnitude because it has an antisymmetry for $\theta \to \theta + \pi$. Because it is always positive and has a negative coefficient, it contributes negatively to the probability that a pixel is in a gully. With 99~billion independent pixels in the hand-drawn training dataset and only 8~parameters in the fit, overfitting is negligible.
+over all pixels $x$, $y$ and obtained the results shown in Table~\ref{tab:fit-results}. The fitted model's predicted probabilities for pixels labeled as ``not in gully'' or ``in gully'' are shown for the 9~watersheds in Figure~\ref{fig:residuals}; note that these are in-sample residuals. The dominant term is $M_{15}$, the minimum convolution with $\sigma = 15$~meter troughs. Because $M_{15}$ values are negative in gullies with a negative coefficient, this term contributes positively to the probability that a pixel is in a gully. The rest of the terms are amplitudes, one interaction term, and the cliff veto. The cliff veto is fitted in absolute magnitude because it has an antisymmetry for $\theta \to \theta + \pi$. Because it is always positive and has a negative coefficient, it contributes negatively to the probability that a pixel is in a gully. Figure~\ref{fig:cross-validation} provides an out-of-sample measure of model quality: the Area Under the Curve (AUC) of the Receiver Operating Characteristic (ROC), cross-validated across the 9~watersheds. All AUC values are above 0.98, indicating not only good discriminating power, but also consistency across watersheds.
 
-\begin{figure}[p]
+\begin{figure}
 \centering
 \includegraphics[width=\textwidth]{img/residuals.png}
 
 \caption{Predicted probability for pixels labeled as ``not in gully'' or ``in gully'' in 9~watersheds. These pixels were used to train the 8~parameter fit, so they are in-sample residuals (difference of ``not in gully'' from 0 and difference of ``in gully'' from 1).\label{fig:residuals}}
 \end{figure}
 
-\begin{table}[b]
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{img/cross-validation.pdf}
+
+\caption{Area Under the Curve (AUC) of the Receiver Operating Characteristic (ROC) for gully-finding models cross-validated across the 9~watersheds.\label{fig:cross-validation}}
+\end{figure}
+
+\begin{table}
 \centering
 \small
 \begin{tabular}{c c c | c c c}
 \toprule
 parameter & value & term & parameter & value & term \\
 \midrule
-$a_1$ & $\,-3.163932$ & $M_{15}$ & $a_5$ & $\,-0.270798$ & $(H_5 - L_5)$ \\
-$a_2$ & $\,-0.720934$ & $(L_{15} - M_{15})$ & $a_6$ & $\,\,\,0.632681$ & $L_{15}(H_{15} - L_{15})$ \\
-$a_3$ & $\,\,\,1.942169$ & $(H_{15} - L_{15})$ & $a_7$ & $\,-0.288150$ & $\left| F_{15} \right|$ (cliff veto) \\
-$a_4$ & $\,\,\,0.195313$ & $(M_5 - M_{15})$ & $b$   & $\,-9.800052$ & (bias/intercept) \\
+$a_1$ & $\,-3.16$ & $M_{15}$ & $a_5$ & $\,-0.27$ & $(H_5 - L_5)$ \\
+$a_2$ & $\,-0.72$ & $(L_{15} - M_{15})$ & $a_6$ & $\,\,\,0.63$ & $L_{15}(H_{15} - L_{15})$ \\
+$a_3$ & $\,\,\,1.94$ & $(H_{15} - L_{15})$ & $a_7$ & $\,-0.29$ & $\left| F_{15} \right|$ (cliff veto) \\
+$a_4$ & $\,\,\,0.20$ & $(M_5 - M_{15})$ & $b$   & $\,-9.80$ & (bias/intercept) \\
 \bottomrule
 \end{tabular}
 
